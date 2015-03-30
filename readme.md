@@ -1,10 +1,11 @@
 # JSON Schema to POCO
-The purpose of this tool is to convert JSON schemas based on the [official JSON schema standard](http://json-schema.org/) into C# POCOs. This tool uses JSON.net as a JSON deserializer, and currently supports up to the [v3 draft](http://tools.ietf.org/html/draft-zyp-json-schema-03).
+The purpose of this tool is to convert JSON schemas based on the [official JSON schema standard](http://json-schema.org/) into C# POCOs. This tool uses JSON.net as a JSON deserializer, JSON.net Schema for schema handling, and currently supports [v3 draft](http://tools.ietf.org/html/draft-zyp-json-schema-03) and
+[v4 draft](http://tools.ietf.org/html/draft-zyp-json-schema-04).
 
 Turn this JSON schema:
 ```json
 {
-  "$schema": "http://json-schema.org/draft-03/schema#",
+  "$schema": "http://json-schema.org/draft-04/schema#",
   "title": "Country",
   "description": "A nation with its own government, occupying a particular territory",
   "type": "object",
@@ -23,10 +24,10 @@ Turn this JSON schema:
     "population": {
       "type": "integer",
       "description": "The number of people inhabiting this country",
-      "minimum": 1000,
-      "required": true
+      "minimum": 1000
     }
-  }
+  },
+  "required": ["population"]
 }
 ```
 Into this! (with all references generated in separate files)
