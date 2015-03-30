@@ -34,7 +34,7 @@ namespace Cvent.SchemaToPoco.Core.Util
         /// </summary>
         /// <param name="type">The type.</param>
         /// <returns>The primitive type as a string, if it exists.</returns>
-        public static string GetPrimitiveTypeAsString(JsonSchemaType? type)
+        public static string GetPrimitiveTypeAsString(JSchemaType? type)
         {
             string sType = type.ToString();
             return Primitives.ContainsKey(sType) ? Primitives[sType] : "System.Object";

@@ -19,10 +19,10 @@ namespace Cvent.SchemaToPoco.Core.Util
         /// </summary>
         /// <param name="schema">The JSON shema.</param>
         /// <returns>True if it is an integer.</returns>
-        public static bool IsNumber(JsonSchema schema)
+        public static bool IsNumber(JSchema schema)
         {
-            return schema.Type != null &&
-                   (schema.Type.Value.ToString().Equals("Integer") || schema.Type.Value.ToString().Equals("Float"));
+            return schema.Type.HasValue && 
+                   (schema.Type.Value.Equals(JSchemaType.Integer) || schema.Type.Value.Equals(JSchemaType.Number));
         }
 
         /// <summary>
@@ -30,9 +30,9 @@ namespace Cvent.SchemaToPoco.Core.Util
         /// </summary>
         /// <param name="schema">The JSON shema.</param>
         /// <returns>True if it is an string.</returns>
-        public static bool IsString(JsonSchema schema)
+        public static bool IsString(JSchema schema)
         {
-            return schema.Type != null && schema.Type.Value.ToString().Equals("String");
+            return schema.Type.HasValue && schema.Type.Value.Equals(JSchemaType.String);
         }
 
         /// <summary>
@@ -40,9 +40,9 @@ namespace Cvent.SchemaToPoco.Core.Util
         /// </summary>
         /// <param name="schema">The JSON shema.</param>
         /// <returns>True if it is an array.</returns>
-        public static bool IsArray(JsonSchema schema)
+        public static bool IsArray(JSchema schema)
         {
-            return schema.Type != null && schema.Type.Value.ToString().Equals("Array");
+            return schema.Type.HasValue && schema.Type.Value.Equals(JSchemaType.Array);
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace Cvent.SchemaToPoco.Core.Util
         /// <param name="schema">The schema.</param>
         /// <exception cref="System.NotSupportedException">Thrown when given schema is not an array type.</exception>
         /// <returns>The array type of the schema.</returns>
-        public static ArrayType GetArrayType(JsonSchema schema)
+        public static ArrayType GetArrayType(JSchema schema)
         {
             if (!IsArray(schema))
             {
@@ -67,7 +67,7 @@ namespace Cvent.SchemaToPoco.Core.Util
         /// <param name="schema">The JSON schema.</param>
         /// <param name="ns">The namespace.</param>
         /// <returns>The type of the schema.</returns>
-        public static Type GetType(JsonSchema schema, string ns = "")
+        public static Type GetType(JSchema schema, string ns = "")
         {
             string toRet = DEFAULT_TYPE;
             var builder = new TypeBuilderHelper(ns);

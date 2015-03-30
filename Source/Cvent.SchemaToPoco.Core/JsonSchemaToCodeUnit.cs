@@ -1,5 +1,6 @@
 ﻿using System;
 using System.CodeDom;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Cvent.SchemaToPoco.Core.Types;
 using Cvent.SchemaToPoco.Core.Util;
@@ -23,7 +24,7 @@ namespace Cvent.SchemaToPoco.Core
         /// <summary>
         ///     The JsonSchema, for easy access.
         /// </summary>
-        private readonly JsonSchema _schemaDocument;
+        private readonly JSchema _schemaDocument;
 
         /// <summary>
         ///     The extended JsonSchema wrapper.
@@ -71,6 +72,9 @@ namespace Cvent.SchemaToPoco.Core
             // Add imports for interfaces and dependencies
             nsWrap.AddImportsFromWrapper(_schemaWrapper);
 
+            // Add imports
+            nsWrap.AddImportsFromSchema(_schemaDocument);
+
             // Add comments and attributes for class
             if (!String.IsNullOrEmpty(_schemaDocument.Description))
             {
@@ -78,9 +82,9 @@ namespace Cvent.SchemaToPoco.Core
             }
 
             // Add extended class
-            if (_schemaDocument.Extends != null && _schemaDocument.Extends.Count > 0)
+            if (_schemaDocument.AllOf != null && _schemaDocument.AllOf.Count > 0)
             {
-                clWrap.AddInterface(JsonSchemaUtils.GetType(_schemaDocument.Extends[0], _codeNamespace).Name);
+                clWrap.AddInterface(JsonSchemaUtils.GetType(_schemaDocument.AllOf[0], _codeNamespace).Name);
             }
 
             // Add interfaces
@@ -90,11 +94,11 @@ namespace Cvent.SchemaToPoco.Core
             }
 
             // Add properties with getters/setters
-            if (_schemaDocument.Properties != null)
+            if (_schemaDocument.Properties.Any())
             {
                 foreach (var i in _schemaDocument.Properties)
                 {
-                    JsonSchema schema = i.Value;
+                    JSchema schema = i.Value;
 
                     // Sanitize inputs
                     if (!String.IsNullOrEmpty(schema.Description))
@@ -103,7 +107,7 @@ namespace Cvent.SchemaToPoco.Core
                     }
 
                     // If it is an enum
-                    if (schema.Enum != null)
+                    if (schema.Enum.Any())
                     {
                         string name = i.Key.Capitalize();
                         var enumField = new CodeTypeDeclaration(name);
@@ -170,7 +174,8 @@ namespace Cvent.SchemaToPoco.Core
                         var prWrap = new PropertyWrapper(property);
 
                         // Add comments and attributes
-                        prWrap.Populate(schema, _attributeType);
+                        var isRequired = _schemaDocument.Required.Contains(i.Key);
+                        prWrap.Populate(schema, _attributeType, isRequired);
 
                         // Add default, if any
                         if (schema.Default != null)

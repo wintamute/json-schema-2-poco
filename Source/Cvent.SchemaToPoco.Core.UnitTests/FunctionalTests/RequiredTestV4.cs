@@ -3,20 +3,20 @@
 namespace Cvent.SchemaToPoco.Core.UnitTests.FunctionalTests
 {
     [TestFixture]
-    public class RequiredTest : BaseTest
+    public class RequiredTestV4 : BaseTest
     {
         [Test]
         public void TestBasic()
         {
             const string schema = @"{
-    ""$schema"": ""http://json-schema.org/draft-03/schema#"",
+    ""$schema"": ""http://json-schema.org/draft-04/schema#"",
     ""type"" : ""object"",
     ""properties"" : {
         ""foo"" : {
-            ""type"" : ""string"",
-            ""required"" : true
+            ""type"" : ""string""
         }
-    }
+    },
+    ""required"" : [""foo""]
 }";
             const string correctResult = @"namespace generated
 {

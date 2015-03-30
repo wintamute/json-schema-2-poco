@@ -1,5 +1,6 @@
 ﻿using System;
 using System.CodeDom;
+using System.Linq;
 using Cvent.SchemaToPoco.Core.Util;
 using Newtonsoft.Json.Schema;
 
@@ -43,7 +44,7 @@ namespace Cvent.SchemaToPoco.Core.Wrappers
         ///     Adds imports for attributes and lists.
         /// </summary>
         /// <param name="schema">The schema to import from.</param>
-        public void AddImportsFromSchema(JsonSchema schema)
+        public void AddImportsFromSchema(JSchema schema)
         {
             // Arrays
             if (JsonSchemaUtils.IsArray(schema))
@@ -58,7 +59,7 @@ namespace Cvent.SchemaToPoco.Core.Wrappers
             }
 
             // Required | StringLength | MinItems | MaxItems | Pattern
-            if ((schema.Required != null && schema.Required.Value) || schema.MaximumLength != null ||
+            if ((schema.Required.Any()) || schema.MaximumLength != null ||
                 schema.MinimumLength != null
                 || schema.MinimumItems != null || schema.MaximumItems != null || schema.Pattern != null)
             {

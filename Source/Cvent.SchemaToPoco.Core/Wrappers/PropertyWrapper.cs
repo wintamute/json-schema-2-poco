@@ -21,7 +21,8 @@ namespace Cvent.SchemaToPoco.Core.Wrappers
         /// </summary>
         /// <param name="schema">The JsonSchema.</param>
         /// <param name="type">Annotation type to generate.</param>
-        public void Populate(JsonSchema schema, AttributeType type)
+        /// <param name="required"></param>
+        public void Populate(JSchema schema, AttributeType type, bool required)
         {
             // Add description
             if (schema.Description != null)
@@ -30,7 +31,7 @@ namespace Cvent.SchemaToPoco.Core.Wrappers
             }
 
             // Add required attribute
-            if (schema.Required != null && schema.Required.Value)
+            if (required)
             {
                 /*switch (type)
                 {
@@ -51,7 +52,7 @@ namespace Cvent.SchemaToPoco.Core.Wrappers
             {
                 if (schema.Minimum != null)
                 {
-                    if (schema.ExclusiveMinimum != null && schema.ExclusiveMinimum.Value)
+                    if (schema.ExclusiveMinimum)
                     {
                         AddAttribute("MinValue", (int) schema.Minimum.Value + 1);
                     }
@@ -62,7 +63,7 @@ namespace Cvent.SchemaToPoco.Core.Wrappers
                 }
                 if (schema.Maximum != null)
                 {
-                    if (schema.ExclusiveMaximum != null && schema.ExclusiveMaximum.Value)
+                    if (schema.ExclusiveMaximum)
                     {
                         AddAttribute("MaxValue", (int) schema.Maximum.Value - 1);
                     }

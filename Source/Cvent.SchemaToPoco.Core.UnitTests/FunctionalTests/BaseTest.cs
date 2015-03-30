@@ -14,6 +14,8 @@ namespace Cvent.SchemaToPoco.Core.UnitTests.FunctionalTests
         /// <param name="actualJson">Generated C# code.</param>
         public void TestBasicEquals(string expectedJson, string actualJson)
         {
+            System.Console.Write(expectedJson);
+            System.Console.Write(actualJson);
             Assert.AreEqual(TestUtils.SanitizeCSharpCode(expectedJson), TestUtils.SanitizeCSharpCode(actualJson));
         }
     }
