@@ -9,12 +9,12 @@ namespace Cvent.SchemaToPoco.Core.UnitTests.FunctionalTests
         public void TestBasic()
         {
             const string schema = @"{
-    ""$schema"": ""http://json-schema.org/draft-03/schema#"",
-    ""type"" : ""object"",
-    ""properties"" : {
-        ""foo"" : {
-            ""type"" : ""string"",
-            ""required"" : true
+    '$schema': 'http://json-schema.org/draft-03/schema#',
+    'type' : 'object',
+    'properties' : {
+        'foo' : {
+            'type' : 'string',
+            'required' : true
         }
     }
 }";

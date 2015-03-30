@@ -64,7 +64,7 @@
     <Compile Include="FunctionalTests\PatternTest.cs" />
     <Compile Include="FunctionalTests\PropertyTest.cs" />
     <Compile Include="FunctionalTests\RequiredTest.cs" />
-    <Compile Include="FunctionalTests\RequiredTestV4.cs" />
+    <Compile Include="FunctionalTests\DraftV4\RequiredTestV4.cs" />
     <Compile Include="FunctionalTests\TitleTest.cs" />
     <Compile Include="FunctionalTests\TypeTest.cs" />
     <Compile Include="FunctionalTests\UniqueItemsTest.cs" />
