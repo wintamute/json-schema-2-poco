@@ -55,6 +55,8 @@
     <Compile Include="FunctionalTests\BaseTest.cs" />
     <Compile Include="FunctionalTests\DefaultTest.cs" />
     <Compile Include="FunctionalTests\DescriptionTest.cs" />
+    <Compile Include="FunctionalTests\DraftV4\ObjectTestV4.cs" />
+    <Compile Include="FunctionalTests\DraftV4\ObjectTitleTestV4.cs" />
     <Compile Include="FunctionalTests\EnumTest.cs" />
     <Compile Include="FunctionalTests\ExclusiveMinMaxTest.cs" />
     <Compile Include="FunctionalTests\ItemTest.cs" />

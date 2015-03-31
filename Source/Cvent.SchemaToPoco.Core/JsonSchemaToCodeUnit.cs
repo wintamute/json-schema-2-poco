@@ -82,7 +82,7 @@ namespace Cvent.SchemaToPoco.Core
             }
 
             // Add extended class
-            if (_schemaDocument.AllOf != null && _schemaDocument.AllOf.Count > 0)
+            if (_schemaDocument.AllOf.Any())
             {
                 clWrap.AddInterface(JsonSchemaUtils.GetType(_schemaDocument.AllOf[0], _codeNamespace).Name);
             }
@@ -131,7 +131,7 @@ namespace Cvent.SchemaToPoco.Core
                     {
                         // WARNING: This assumes the namespace of the property is the same as the parent.
                         // This should not be a problem since imports are handled for all dependencies at the beginning.
-                        Type type = JsonSchemaUtils.GetType(schema, _codeNamespace);
+                        Type type = JsonSchemaUtils.GetType(schema, i.Key, _codeNamespace);
                         bool isCustomType = type.Namespace != null && type.Namespace.Equals(_codeNamespace);
                         string strType = String.Empty;
 

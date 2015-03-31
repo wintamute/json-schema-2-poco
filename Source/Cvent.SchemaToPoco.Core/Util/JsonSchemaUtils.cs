@@ -17,7 +17,7 @@ namespace Cvent.SchemaToPoco.Core.Util
         /// <summary>
         ///     Check if the schema is an integer type.
         /// </summary>
-        /// <param name="schema">The JSON shema.</param>
+        /// <param name="schema">The JSON schema.</param>
         /// <returns>True if it is an integer.</returns>
         public static bool IsNumber(JSchema schema)
         {
@@ -28,7 +28,7 @@ namespace Cvent.SchemaToPoco.Core.Util
         /// <summary>
         ///     Check if the schema is an string type.
         /// </summary>
-        /// <param name="schema">The JSON shema.</param>
+        /// <param name="schema">The JSON schema.</param>
         /// <returns>True if it is an string.</returns>
         public static bool IsString(JSchema schema)
         {
@@ -38,11 +38,21 @@ namespace Cvent.SchemaToPoco.Core.Util
         /// <summary>
         ///     Check if the schema is an array type.
         /// </summary>
-        /// <param name="schema">The JSON shema.</param>
+        /// <param name="schema">The JSON schema.</param>
         /// <returns>True if it is an array.</returns>
         public static bool IsArray(JSchema schema)
         {
             return schema.Type.HasValue && schema.Type.Value.Equals(JSchemaType.Array);
+        }
+
+        /// <summary>
+        ///     Check if the schema is an object type.
+        /// </summary>
+        /// <param name="schema">The JSON schema.</param>
+        /// <returns>True if it is an array.</returns>
+        public static bool IsObject(JSchema schema)
+        {
+            return schema.Type.HasValue && schema.Type.Value.Equals(JSchemaType.Object);
         }
 
         /// <summary>
@@ -65,9 +75,10 @@ namespace Cvent.SchemaToPoco.Core.Util
         ///     Get the type of the schema. If it is an array, get the array type.
         /// </summary>
         /// <param name="schema">The JSON schema.</param>
+        /// <param name="propertyName"></param>
         /// <param name="ns">The namespace.</param>
         /// <returns>The type of the schema.</returns>
-        public static Type GetType(JSchema schema, string ns = "")
+        public static Type GetType(JSchema schema, string propertyName, string ns = "")
         {
             string toRet = DEFAULT_TYPE;
             var builder = new TypeBuilderHelper(ns);
@@ -79,8 +90,12 @@ namespace Cvent.SchemaToPoco.Core.Util
                 {
                     return builder.GetCustomType(schema.Title, true);
                 }
-                if (schema.Type != null)
+                if (schema.Type.HasValue)
                 {
+                    if (IsObject(schema) && !string.IsNullOrWhiteSpace(propertyName))
+                    {
+                        return builder.GetCustomType(propertyName, true);
+                    }
                     toRet = TypeUtils.GetPrimitiveTypeAsString(schema.Type);
                 }
             }
