@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace Cvent.SchemaToPoco.Core.UnitTests.FunctionalTests
+namespace Cvent.SchemaToPoco.Core.UnitTests.FunctionalTests.DraftV4
 {
     [TestFixture]
     public class ObjectTitleTestV4 : BaseTest

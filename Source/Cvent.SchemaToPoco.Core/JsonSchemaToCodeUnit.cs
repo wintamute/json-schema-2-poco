@@ -131,7 +131,7 @@ namespace Cvent.SchemaToPoco.Core
                     {
                         // WARNING: This assumes the namespace of the property is the same as the parent.
                         // This should not be a problem since imports are handled for all dependencies at the beginning.
-                        Type type = JsonSchemaUtils.GetType(schema, i.Key, _codeNamespace);
+                        Type type = JsonSchemaUtils.GetType(schema, _codeNamespace, i.Key);
                         bool isCustomType = type.Namespace != null && type.Namespace.Equals(_codeNamespace);
                         string strType = String.Empty;
 

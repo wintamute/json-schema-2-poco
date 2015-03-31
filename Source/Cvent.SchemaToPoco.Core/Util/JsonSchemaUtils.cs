@@ -75,10 +75,10 @@ namespace Cvent.SchemaToPoco.Core.Util
         ///     Get the type of the schema. If it is an array, get the array type.
         /// </summary>
         /// <param name="schema">The JSON schema.</param>
-        /// <param name="propertyName"></param>
         /// <param name="ns">The namespace.</param>
+        /// <param name="fieldName">The field name</param>
         /// <returns>The type of the schema.</returns>
-        public static Type GetType(JSchema schema, string propertyName, string ns = "")
+        public static Type GetType(JSchema schema, string ns = "", string fieldName = "")
         {
             string toRet = DEFAULT_TYPE;
             var builder = new TypeBuilderHelper(ns);
@@ -92,9 +92,9 @@ namespace Cvent.SchemaToPoco.Core.Util
                 }
                 if (schema.Type.HasValue)
                 {
-                    if (IsObject(schema) && !string.IsNullOrWhiteSpace(propertyName))
+                    if (IsObject(schema) && !string.IsNullOrWhiteSpace(fieldName))
                     {
-                        return builder.GetCustomType(propertyName, true);
+                        return builder.GetCustomType(fieldName, true);
                     }
                     toRet = TypeUtils.GetPrimitiveTypeAsString(schema.Type);
                 }

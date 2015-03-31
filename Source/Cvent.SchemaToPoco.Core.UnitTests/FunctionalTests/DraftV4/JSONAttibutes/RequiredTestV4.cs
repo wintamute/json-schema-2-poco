@@ -1,6 +1,7 @@
-﻿using NUnit.Framework;
+﻿using Cvent.SchemaToPoco.Core.Types;
+using NUnit.Framework;
 
-namespace Cvent.SchemaToPoco.Core.UnitTests.FunctionalTests.DraftV4
+namespace Cvent.SchemaToPoco.Core.UnitTests.FunctionalTests.DraftV4.JSONAttibutes
 {
     [TestFixture]
     public class RequiredTestV4 : BaseTest
@@ -29,7 +30,7 @@ namespace Cvent.SchemaToPoco.Core.UnitTests.FunctionalTests.DraftV4
 
         private string _foo;
 
-        [Required()]
+        [JsonProperty(Required=Required.Always)]
         public virtual string Foo
         {
             get
@@ -44,7 +45,7 @@ namespace Cvent.SchemaToPoco.Core.UnitTests.FunctionalTests.DraftV4
     }
 }";
 
-            TestBasicEquals(correctResult, JsonSchemaToPoco.Generate(schema));
+            TestBasicEquals(correctResult, JsonSchemaToPoco.Generate(schema, "generated", AttributeType.JsonDotNet));
         }
     }
 }

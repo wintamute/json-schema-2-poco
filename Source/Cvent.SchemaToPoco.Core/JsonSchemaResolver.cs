@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Cvent.SchemaToPoco.Core.Types;
 using Cvent.SchemaToPoco.Core.Util;
@@ -40,7 +41,7 @@ namespace Cvent.SchemaToPoco.Core
         /// <summary>
         ///     Resolving schemas so that they can be parsed.
         /// </summary>
-        private readonly Newtonsoft.Json.Schema.JSchemaUrlResolver _resolver = new Newtonsoft.Json.Schema.JSchemaUrlResolver();
+        private readonly JSchemaUrlResolver _resolver = new JSchemaUrlResolver();
 
         /// <summary>
         ///     Keeps track of the found schemas.
@@ -86,17 +87,18 @@ namespace Cvent.SchemaToPoco.Core
         /// </summary>
         /// <param name="parent">Path to the parent file.</param>
         /// <param name="current">Path to the current file.</param>
+        /// <param name="parentField"></param>
         /// <returns>An extended wrapper for the JsonSchema.</returns>
         /// TODO check if parent is needed - right now it assumes parent for all children
-        private JsonSchemaWrapper ResolveSchemaHelper(Uri parent, Uri current)
+        private JsonSchemaWrapper ResolveSchemaHelper(Uri parent, Uri current, string parentField = "")
         {
             var uri = IoUtils.GetAbsoluteUri(parent, current, true);
             var data = IoUtils.ReadFromPath(uri);
 
-            return ResolveSchemaHelper(uri, parent, data);
+            return ResolveSchemaHelper(uri, parent, data, parentField);
         }
 
-        private JsonSchemaWrapper ResolveSchemaHelper(Uri curr, Uri parent, string data)
+        private JsonSchemaWrapper ResolveSchemaHelper(Uri curr, Uri parent, string data, string parentField)
         {
             var definition = new
             {
@@ -107,18 +109,33 @@ namespace Cvent.SchemaToPoco.Core
             var deserialized = JsonConvert.DeserializeAnonymousType(data, definition);
             var dependencies = new List<JsonSchemaWrapper>();
 
-            MatchCollection matches = Regex.Matches(data, @"\""\$ref\""\s*:\s*\""(.*.json)\""");
+            // $ref doesn't have to have .json extension
+            MatchCollection matches = Regex.Matches(data, @"\""\$ref\""\s*:\s*\""(.*)\""");
             foreach (Match match in matches)
             {
                 // Get the full path to the file, and change the reference to match
                 var currPath = new Uri(match.Groups[1].Value, UriKind.RelativeOrAbsolute);
                 var currUri = IoUtils.GetAbsoluteUri(parent, currPath, true);
 
+                var refs = new Dictionary<string, string>();
+
+                foreach (var property in deserialized.properties)
+                {
+                    foreach (var prop in property.Value.Properties())
+                    {
+                        if (prop.Name == "$ref")
+                        {
+                            refs.Add(prop.Value.ToString(), property.Key);
+                        }
+                    }
+                }
+
                 JsonSchemaWrapper schema;
 
                 if (!_schemas.ContainsKey(currUri))
                 {
-                    schema = ResolveSchemaHelper(parent, currUri);
+                    var parentFieldName = refs[currUri.OriginalString];
+                    schema = ResolveSchemaHelper(parent, currUri, parentFieldName);
                     _schemas.Add(currUri, schema);
                 }
                 else
@@ -151,7 +168,7 @@ namespace Cvent.SchemaToPoco.Core
                             // Create dummy internal Uri
                             var dummyUri = new Uri(new Uri(curr + "/"), s.Key);
 
-                            JsonSchemaWrapper schema = ResolveSchemaHelper(dummyUri, curr, propData);
+                            JsonSchemaWrapper schema = ResolveSchemaHelper(dummyUri, curr, propData, s.Key);
 
                             if (!_schemas.ContainsKey(dummyUri))
                             {
@@ -177,7 +194,11 @@ namespace Cvent.SchemaToPoco.Core
             }
 
             parsed.Id = curr;
-            parsed.Title = parsed.Title.SanitizeIdentifier();
+            if (string.IsNullOrWhiteSpace(parsed.Title))
+            {
+                parsed.Title = parentField.SanitizeIdentifier();
+            }
+            else parsed.Title = parsed.Title.SanitizeIdentifier();
             var toReturn = new JsonSchemaWrapper(parsed) { Namespace = _ns, Dependencies = dependencies };
 
             // If csharpType is specified

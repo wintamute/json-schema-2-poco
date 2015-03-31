@@ -33,7 +33,7 @@ namespace Cvent.SchemaToPoco.Core.Wrappers
             // Add required attribute
             if (required)
             {
-                /*switch (type)
+                switch (type)
                 {
                     case AttributeType.SystemDefault:
                         AddAttribute("Required");
@@ -42,9 +42,9 @@ namespace Cvent.SchemaToPoco.Core.Wrappers
                         AddAttribute("JsonProperty",
                             new CodeAttributeArgument("Required", new CodeSnippetExpression("Required.Always")));
                         break;
-                }*/
+                }
 
-                AddAttribute("Required");
+                //AddAttribute("Required");
             }
 
             // Number only flags
