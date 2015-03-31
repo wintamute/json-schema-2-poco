@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Cvent.SchemaToPoco.Core;
 using Cvent.SchemaToPoco.Core.Types;
@@ -43,9 +44,9 @@ namespace Cvent.SchemaToPoco.Console
         /// <summary>
         ///     Configure command line options.
         /// </summary>
-        /// <param name="arguements">Arguments from the command line.</param>
+        /// <param name="arguments">Arguments from the command line.</param>
         /// <returns>The command line options.</returns>
-        private CommandLineSettings ConfigureCommandLineOptions(IEnumerable<string> arguements)
+        private CommandLineSettings ConfigureCommandLineOptions(IEnumerable<string> arguments)
         {
             var settings = new CommandLineSettings();
 
@@ -65,7 +66,12 @@ namespace Cvent.SchemaToPoco.Console
                 {"?|help", "Show this help message", h => settings.ShowHelp = !string.IsNullOrWhiteSpace(h)}
             };
 
-            _options.Parse(arguements);
+            _options.Parse(arguments);
+
+            if (!arguments.Any())
+            {
+                settings.ShowHelp = true;
+            }
 
             return settings;
         }
